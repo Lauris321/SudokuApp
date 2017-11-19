@@ -28,11 +28,11 @@ namespace SudokuAPI.Entities
 
         public ICollection<Comment> CommentsList { get; set; } = new List<Comment>();
 
-        //[ForeignKey("CreatorId")]
-        //public User Creator { get; set; }
+        [ForeignKey("CreatorId")]
+        public User Creator { get; set; }
 
-        //public int CreatorId { get; set; }
+        public int CreatorId { get; set; }
 
-        //public ICollection<User> AssigneesList { get; set } = new List<User>();
+        public ICollection<ChallengeUser> AssigneesList { get; set; } = new List<ChallengeUser>();
     }
 }

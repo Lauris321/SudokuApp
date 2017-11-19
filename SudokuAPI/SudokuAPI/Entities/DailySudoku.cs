@@ -1,5 +1,6 @@
 ﻿using SudokuAPI.Enumerations;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,5 +21,7 @@ namespace SudokuAPI.Entities
 
         [Required]
         public Difficulty Difficulty { get; set; }
+
+        public ICollection<DailySudokuUser> ScoresList { get; } = new List<DailySudokuUser>();
     }
 }

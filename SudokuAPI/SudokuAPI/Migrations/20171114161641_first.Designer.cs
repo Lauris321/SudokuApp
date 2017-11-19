@@ -12,9 +12,10 @@ using System;
 namespace SudokuAPI.Migrations
 {
     [DbContext(typeof(SudokuInfoContext))]
-    partial class SudokuInfoContextModelSnapshot : ModelSnapshot
+    [Migration("20171114161641_first")]
+    partial class first
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,7 +156,7 @@ namespace SudokuAPI.Migrations
                     b.HasOne("SudokuAPI.Entities.User", "Creator")
                         .WithMany("CreatedChallengeList")
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SudokuAPI.Entities.ChallengeUser", b =>
@@ -163,12 +164,12 @@ namespace SudokuAPI.Migrations
                     b.HasOne("SudokuAPI.Entities.Challenge", "Challenge")
                         .WithMany("AssigneesList")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SudokuAPI.Entities.User", "User")
                         .WithMany("AssignedChallengesList")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SudokuAPI.Entities.Comment", b =>
@@ -176,7 +177,7 @@ namespace SudokuAPI.Migrations
                     b.HasOne("SudokuAPI.Entities.Challenge", "Challenge")
                         .WithMany("CommentsList")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SudokuAPI.Entities.DailySudokuUser", b =>
@@ -184,12 +185,12 @@ namespace SudokuAPI.Migrations
                     b.HasOne("SudokuAPI.Entities.DailySudoku", "DailySudoku")
                         .WithMany("ScoresList")
                         .HasForeignKey("DailySudokuId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SudokuAPI.Entities.User", "User")
                         .WithMany("DailySudokuScoresList")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SudokuAPI.Entities.UserUser", b =>
@@ -197,12 +198,12 @@ namespace SudokuAPI.Migrations
                     b.HasOne("SudokuAPI.Entities.User", "User1")
                         .WithMany("AcceptedFriendshipsList")
                         .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SudokuAPI.Entities.User", "User")
                         .WithMany("RequestedFriendshipsList")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SudokuAPI.CreateContracts;
 using SudokuAPI.Entities;
 using SudokuAPI.Models;
+using SudokuAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +18,11 @@ namespace SudokuAPI.Controllers
     {
         private ISudokuInfoRepository _sudokuInfoRepository;
 
-        public CommentsController(ISudokuInfoRepository sudokuInfoRepository)
+        private readonly int _currentUser;
+        public CommentsController(ISudokuInfoRepository sudokuInfoRepository, IHttpContextAccessor httpContextAccessor)
         {
             _sudokuInfoRepository = sudokuInfoRepository;
+            _currentUser = httpContextAccessor.CurrentUser();
         }
 
         [HttpGet("{challengeId}/comments")]
@@ -48,6 +53,7 @@ namespace SudokuAPI.Controllers
             return Ok(commentResult);
         }
 
+        [Authorize]
         [HttpPost("{challengeId}/comments")]
         public IActionResult CreateComment(int challengeId, [FromBody]CommentCreate comment)
         {
@@ -78,47 +84,59 @@ namespace SudokuAPI.Controllers
             return CreatedAtRoute("GetComment", new { challengeId = challengeId, commentId = commentResult.Id }, commentResult);
         }
 
+        [Authorize]
         [HttpPut("{challengeId}/comments/{commentId}")]
         public IActionResult UpdateComment(int challengeId, int commentId, [FromBody]CommentCreate comment)
         {
-            if (!_sudokuInfoRepository.ChallengeExists(challengeId))
+            if (_sudokuInfoRepository.IsAdmin(_currentUser))
             {
-                return NotFound();
+                if (!_sudokuInfoRepository.ChallengeExists(challengeId))
+                {
+                    return NotFound();
+                }
+
+                var result = _sudokuInfoRepository.UpdateComment(challengeId, commentId, comment);
+
+                if (!result)
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+
+                return NoContent();
             }
 
-            var result = _sudokuInfoRepository.UpdateComment(challengeId, commentId, comment);
-
-            if (!result)
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
-
-            return NoContent();
+            return StatusCode(403, "Forbidden!");
         }
 
+        [Authorize]
         [HttpDelete("{challengeId}/comments/{commentId}")]
         public IActionResult DeleteComment(int challengeId, int commentId)
         {
-            if (!_sudokuInfoRepository.ChallengeExists(challengeId))
+            if (_sudokuInfoRepository.IsAdmin(_currentUser))
             {
-                return NotFound();
+                if (!_sudokuInfoRepository.ChallengeExists(challengeId))
+                {
+                    return NotFound();
+                }
+
+                var comment = _sudokuInfoRepository.GetComment(challengeId, commentId);
+
+                if (comment == null)
+                {
+                    return NotFound();
+                }
+
+                var result = _sudokuInfoRepository.DeleteComment(comment);
+
+                if (!result)
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+
+                return NoContent();
             }
 
-            var comment = _sudokuInfoRepository.GetComment(challengeId, commentId);
-
-            if(comment == null)
-            {
-                return NotFound();
-            }
-
-            var result = _sudokuInfoRepository.DeleteComment(comment);
-
-            if (!result)
-            {
-                return StatusCode(500, "A problem happened while handling your request.");
-            }
-
-            return NoContent();
+            return StatusCode(403, "Forbidden!");
         }
     }
 }

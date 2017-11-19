@@ -1,12 +1,11 @@
-﻿using SudokuAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SudokuAPI.UpdateContracts
+namespace SudokuAPI.CreateContracts
 {
-    public class ChallengeUpdate
+    public class ScoreCreate
     {
         public TimeSpan CompletionTime { get; set; }
     }
