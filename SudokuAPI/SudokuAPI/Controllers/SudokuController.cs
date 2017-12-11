@@ -33,17 +33,8 @@ namespace SudokuAPI.Controllers
         {
             var sudokuList = _sudokuInfoRepository.GetDailySudokuList();
             ICollection<DailySudokuListDto> sudokuListDto = new List<DailySudokuListDto>();
-
-            foreach (DailySudoku sudokuListItem in sudokuList)
-            {
-                Mapper.Map(sudokuList, sudokuListDto);
-                sudokuListDto.Add(new DailySudokuListDto
-                {
-                    Id = sudokuListItem.Id,
-                    Date = sudokuListItem.Date,
-                    Difficulty = sudokuListItem.Difficulty
-                });
-            }
+            
+            Mapper.Map(sudokuList, sudokuListDto);
 
             return Ok(sudokuListDto);
         }
@@ -66,6 +57,7 @@ namespace SudokuAPI.Controllers
                 {
                     CompletionTime = score.CompletionTime,
                     UserId = score.UserId,
+                    Username = _sudokuInfoRepository.GetUser(score.UserId).Username,
                     DailySudokuId = score.DailySudokuId
                 });
             }
