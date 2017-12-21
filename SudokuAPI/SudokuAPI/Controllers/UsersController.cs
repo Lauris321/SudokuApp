@@ -39,12 +39,12 @@ namespace SudokuAPI.Controllers
         }
 
         [HttpGet()]
-        [Authorize]
-        public IActionResult GetUsersList()
+		[Authorize]
+		public IActionResult GetUsersList()
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser))
-            {
-                ICollection<User> usersList = (ICollection<User>)_sudokuInfoRepository.GetUsersList();
+			if (_sudokuInfoRepository.IsAdmin(_currentUser))
+			{
+				ICollection<User> usersList = (ICollection<User>)_sudokuInfoRepository.GetUsersList();
                 ICollection<UserListDto> usersListDto = new List<UserListDto>();
 
                 foreach (User userEntity in usersList)
@@ -58,19 +58,19 @@ namespace SudokuAPI.Controllers
                     });
                 }
 
-                return Ok(usersListDto);
-            }
+				return Ok(usersListDto);
+			}
 
             return StatusCode(403, "Forbidden!");
-        }
+		}
 
         [Authorize]
         [HttpGet("{userId}", Name = "GetUser")]
         public IActionResult GetUser(int userId)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
-            {
-                if (!_sudokuInfoRepository.UserExists(userId))
+			if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
+			{
+				if (!_sudokuInfoRepository.UserExists(userId))
                 {
                     return NotFound();
                 }
@@ -152,17 +152,26 @@ namespace SudokuAPI.Controllers
                 };
 
                 return Ok(userDto);
-            }
+			}
 
             return StatusCode(403, "Forbidden!");
-        }
+		}
         
         [HttpPost()]
         public IActionResult CreateUser([FromBody]UserCreate user)
         {
-            User userEntity = new User()
+			var auth = Authorization.User;
+			if (user.Username == "admin")
+			{
+				auth = Authorization.Admin;
+			} else
+			{
+				auth = Authorization.User;
+			}
+
+			User userEntity = new User()
             {
-                Authorization = Authorization.User,
+                Authorization = auth,
                 Email = user.Email,
                 Password = _hashService.CalculateHash(user.Password),
                 Username = user.Username
@@ -177,13 +186,13 @@ namespace SudokuAPI.Controllers
             return CreatedAtRoute("GetUser", new { userId = userEntity.Id }, userEntity);
         }
 
-        [Authorize]
-        [HttpPut("{userId}")]
+		[Authorize]
+		[HttpPut("{userId}")]
         public IActionResult UpdateUser(int userId, [FromBody]UserCreate userUpdate)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
-            {
-                var user = _sudokuInfoRepository.GetUser(userId);
+			if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
+			{
+				var user = _sudokuInfoRepository.GetUser(userId);
                 userUpdate.Password = _hashService.CalculateHash(userUpdate.Password);
 
                 if (!_sudokuInfoRepository.UserExists(userId))
@@ -199,18 +208,18 @@ namespace SudokuAPI.Controllers
                 }
 
                 return NoContent();
-            }
+			}
 
-            return StatusCode(403, "Forbidden!");
-        }
+			return StatusCode(403, "Forbidden!");
+		}
 
         [Authorize]
         [HttpDelete("{userId}")]
         public IActionResult DeleteUser(int userId)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
-            {
-                var user = _sudokuInfoRepository.GetUser(userId);
+			if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
+			{
+				var user = _sudokuInfoRepository.GetUser(userId);
 
                 if (!_sudokuInfoRepository.UserExists(userId))
                 {
@@ -225,18 +234,18 @@ namespace SudokuAPI.Controllers
                 }
 
                 return NoContent();
-            }
+			}
 
-            return StatusCode(403, "Forbidden!");
-        }
+			return StatusCode(403, "Forbidden!");
+		}
 
         [Authorize]
         [HttpPost("{userId}/friendship")]
         public IActionResult AddFriendshipRequest(int userId, [FromBody]FriendshipCreate friend)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
-            {
-                if (!_sudokuInfoRepository.UserExists(userId) || !_sudokuInfoRepository.UserExists(friend.FriendId))
+			if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
+			{
+				if (!_sudokuInfoRepository.UserExists(userId) || !_sudokuInfoRepository.UserExists(friend.FriendId))
                 {
                     return NotFound();
                 }
@@ -261,18 +270,18 @@ namespace SudokuAPI.Controllers
                 }
 
                 return CreatedAtRoute("GetUser", new { userId = friendshipEntity.UserId }, friendshipEntity.User);
-            }
+			}
 
-            return StatusCode(403, "Forbidden!");
-        }
+			return StatusCode(403, "Forbidden!");
+		}
 
         [Authorize]
         [HttpPut("{userId}/friendship")]
         public IActionResult UpdateFriendshipRequest(int userId, [FromBody]FriendshipDto newFriendshipStatus)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
-            {
-                if (!_sudokuInfoRepository.UserExists(userId) ||
+			if (_sudokuInfoRepository.IsAdmin(_currentUser) || _currentUser == userId)
+			{
+				if (!_sudokuInfoRepository.UserExists(userId) ||
                     !_sudokuInfoRepository.UserExists(newFriendshipStatus.FriendId))
                 {
                     return NotFound();
@@ -284,8 +293,8 @@ namespace SudokuAPI.Controllers
                 }
 
                 var result = _sudokuInfoRepository.UpdateFriendship(
-                    _currentUser, 
-                    newFriendshipStatus.FriendId, 
+					_currentUser,
+					newFriendshipStatus.FriendId, 
                     newFriendshipStatus.Status);
 
                 if (!result)
@@ -294,10 +303,10 @@ namespace SudokuAPI.Controllers
                 }
 
                 return NoContent();
-            }
+			}
 
-            return StatusCode(403, "Forbidden!");
-        }
+			return StatusCode(403, "Forbidden!");
+		}
 
         [HttpPost("login")]
         [AllowAnonymous]

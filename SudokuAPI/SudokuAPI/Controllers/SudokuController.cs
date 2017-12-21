@@ -78,9 +78,9 @@ namespace SudokuAPI.Controllers
         [HttpPost()]
         public IActionResult CreateDailySudoku([FromBody]DailySudokuCreate sudoku)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser))
-            {
-                DailySudoku dailySudokuEntity = new DailySudoku()
+			if (_sudokuInfoRepository.IsAdmin(_currentUser))
+			{
+				DailySudoku dailySudokuEntity = new DailySudoku()
                 {
                     Date = sudoku.Date,
                     Difficulty = sudoku.Difficulty,
@@ -94,18 +94,18 @@ namespace SudokuAPI.Controllers
                 }
 
                 return CreatedAtRoute("GetDailySudoku", new { dailySudokuId = dailySudokuEntity.Id }, dailySudokuEntity);
-            }
+			}
 
-            return StatusCode(403, "Forbidden!");
-        }
+			return StatusCode(403, "Forbidden!");
+		}
 
         [Authorize]
         [HttpPut("{dailySudokuId}")]
         public IActionResult UpdateDailySudoku(int dailySudokuId, [FromBody]DailySudokuCreate dailySudokuUpdate)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser))
-            {
-                var dailySudoku = _sudokuInfoRepository.GetDailySudoku(dailySudokuId);
+			if (_sudokuInfoRepository.IsAdmin(_currentUser))
+			{
+				var dailySudoku = _sudokuInfoRepository.GetDailySudoku(dailySudokuId);
 
                 if (dailySudoku == null)
                 {
@@ -120,17 +120,18 @@ namespace SudokuAPI.Controllers
                 }
 
                 return NoContent();
-            }
+			}
 
-            return StatusCode(403, "Forbidden!");
-        }
+			return StatusCode(403, "forbidden!");
+		}
 
-        [HttpDelete("{dailySudokuId}")]
+
+		[HttpDelete("{dailySudokuId}")]
         public IActionResult DeleteDailySudoku(int dailySudokuId)
         {
-            if (_sudokuInfoRepository.IsAdmin(_currentUser))
-            {
-                var dailySudoku = _sudokuInfoRepository.GetDailySudoku(dailySudokuId);
+			if (_sudokuInfoRepository.IsAdmin(_currentUser))
+			{
+				var dailySudoku = _sudokuInfoRepository.GetDailySudoku(dailySudokuId);
 
                 if (dailySudoku == null)
                 {
@@ -145,9 +146,9 @@ namespace SudokuAPI.Controllers
                 }
 
                 return NoContent();
-            }
-            return StatusCode(403, "Forbidden!");
-        }
+			}
+			return StatusCode(403, "Forbidden!");
+		}
 
         [Authorize]
         [HttpPost("{dailySudokuId}/addScore")]
@@ -162,12 +163,13 @@ namespace SudokuAPI.Controllers
                 return StatusCode(400, "This users score already exists.");
             }
 
+
             DailySudokuUser dailySudokuUserEntity = new DailySudokuUser()
             {
                 CompletionTime = score.CompletionTime,
                 DailySudokuId = dailySudokuId,
-                UserId = _currentUser
-            };
+				UserId = _currentUser
+			};
             var result = _sudokuInfoRepository.createSudokuScore(dailySudokuUserEntity);
 
             if (!result)
