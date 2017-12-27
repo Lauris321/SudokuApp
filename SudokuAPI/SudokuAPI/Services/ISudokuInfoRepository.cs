@@ -44,7 +44,6 @@ namespace SudokuAPI
         bool CreateComment(Comment commentEntity);
         bool UpdateComment(int challengeId, int commentId, CommentCreate comment);
         bool DeleteComment(Comment comment);
-
-		void DropDB();
-	}
+        
+    }
 }

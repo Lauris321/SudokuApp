@@ -65,10 +65,8 @@ namespace SudokuAPI.Services
 
         public bool UpdateUser(User user, UserCreate userUpdate)
         {
-			//Mapper.Map(userUpdate, user);
-			user.Username = userUpdate.Username;
-			user.Password = userUpdate.Password;
-			user.Email = userUpdate.Email;
+            Mapper.Map(userUpdate, user);
+
             return (_context.SaveChanges() >= 0);
         }
 
@@ -274,17 +272,5 @@ namespace SudokuAPI.Services
 
             return (_context.SaveChanges() >= 0);
         }
-
-		public void DropDB()
-		{
-			_context.Database.ExecuteSqlCommand("DELETE FROM USERUSER");
-			_context.Database.ExecuteSqlCommand("DELETE FROM DAILYSUDOKUUSER");
-			_context.Database.ExecuteSqlCommand("DELETE FROM CHALLENGEUSER");
-			_context.Database.ExecuteSqlCommand("DELETE FROM USERS; DBCC CHECKIDENT('SudokuInfoDBTest.dbo.USERS', RESEED, 0)");
-			_context.Database.ExecuteSqlCommand("DELETE FROM CHALLENGES; DBCC CHECKIDENT('SudokuInfoDBTest.dbo.CHALLENGES', RESEED, 0)");
-			_context.Database.ExecuteSqlCommand("DELETE FROM COMMENTS; DBCC CHECKIDENT('SudokuInfoDBTest.dbo.COMMENTS', RESEED, 0)");
-			_context.Database.ExecuteSqlCommand("DELETE FROM DAILYSUDOKU; DBCC CHECKIDENT('SudokuInfoDBTest.dbo.DAILYSUDOKU', RESEED, 0)");
-			
-		}
-	}
+    }
 }
