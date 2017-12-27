@@ -259,7 +259,7 @@ namespace SudokuAPI.Services
             //var fullGrid = solve(grid);
 
             //var end = DateTime.UtcNow.Millisecond;
-            return "016002400320009000040103000005000069009050300630000800000306010000400072004900680";
+            return "741258963123654789753421896789456123963258741789654123662681651861616516651651656";
         }
     }
 }

@@ -10,7 +10,6 @@ namespace SudokuAPI.Models
         public TimeSpan CompletionTime { get; set; }
         
         public int UserId { get; set; }
-        public String Username { get; set; }
         public int DailySudokuId { get; set; }
     }
 }

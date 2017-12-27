@@ -333,8 +333,8 @@ namespace SudokuAPI.Controllers
                     claims,
                     expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: creds);
-                    user.Password = "";
-                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), user });
+
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
                 }
             }
 
